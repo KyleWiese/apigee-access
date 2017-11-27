@@ -23,7 +23,7 @@
 'use strict'
 var request = require('request')
 var util = require('util')
-var baseUri = "http://apigee-hf-testing-test.apigee.net/apigee-access-service"
+var baseUri = "http://54.237.164.240:9001/apigee-access-service"
 
 function createCache(id, config) {
   return new Cache(id, config)

@@ -24,7 +24,7 @@
 
 var request = require('request')
 var util = require('util')
-var baseUri = "http://apigee-hf-testing-test.apigee.net/apigee-access-service"
+var baseUri = "http://54.237.164.240:9001/apigee-access-service"
 
 var getKeys = function (id, name, scope, api, revision, cb) {
     var uri = util.format("%s/kvms/%s/keys\?scope\=%s", baseUri, name, scope)
