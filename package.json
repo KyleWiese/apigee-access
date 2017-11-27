@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/apigee/apigee-access/issues"
   },
-  "homepage": "https://github.com/apigee/apigee-access"
+  "homepage": "https://github.com/apigee/apigee-access",
+  "dependencies": {
+    "request":"^2.83.0"
+  }
 }
