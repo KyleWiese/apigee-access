@@ -23,7 +23,8 @@
 'use strict'
 var request = require('request')
 var util = require('util')
-var baseUri = "http://54.237.164.240:9001/apigee-access-service"
+
+var baseUri = process.env.APIGEE_ACCESS_CACHE_SERVICE
 
 function createCache(id, config) {
   return new Cache(id, config)
@@ -32,6 +33,10 @@ function createCache(id, config) {
 function Cache(id, config) {
   this.name = config.name
   this.scope = config.scope
+  this.prefix = config.prefix
+  this.timeout = config.timeout
+  this.resource = config.resource
+  this.defaultTtl = config.defaultTtl
   this.id = id
 }
 
@@ -39,7 +44,20 @@ function Cache(id, config) {
 Cache.prototype.get = function (key, cb) {
   var options = {
     uri: util.format("%s/caches/%s/entries/%s", baseUri, this.name, key),
-    method: "GET"
+    method: "GET",
+    qs: {
+      scope: this.scope,
+      prefix: this.prefix,
+      timeout: this.timeout,
+      resource: this.resource,
+      defaultTtl: this.defaultTtl
+    }
+  }
+  if(process.env.APIGEE_ACCESS_KEY && process.env.APIGEE_ACCESS_SECRET) {
+    options.auth = {
+      user: process.env.APIGEE_ACCESS_KEY,
+      pass: process.env.APIGEE_ACCESS_SECRET
+    }
   }
   request(options, function (error, response, body) {
     if (error) {
@@ -81,7 +99,20 @@ Cache.prototype.put = function (key, buf, ttl, cb) {
       'content-type': 'application/json',
       'content-length': Buffer.byteLength(body)
     },
-    body: body
+    body: body,
+    qs: {
+      scope: this.scope,
+      prefix: this.prefix,
+      timeout: this.timeout,
+      resource: this.resource,
+      defaultTtl: this.defaultTtl
+    }
+  }
+  if(process.env.APIGEE_ACCESS_KEY && process.env.APIGEE_ACCESS_SECRET) {
+    options.auth = { 
+      user: process.env.APIGEE_ACCESS_KEY,
+      pass: process.env.APIGEE_ACCESS_SECRET
+    }
   }
   request(options, function (error, response, body) {
     if (cb) {
@@ -105,7 +136,20 @@ Cache.prototype.put = function (key, buf, ttl, cb) {
 Cache.prototype.remove = function (key, cb) {
   var options = {
     uri: util.format("%s/caches/%s/entries/%s", baseUri, this.name, key),
-    method: "DELETE"
+    method: "DELETE",
+    qs: {
+      scope: this.scope,
+      prefix: this.prefix,
+      timeout: this.timeout,
+      resource: this.resource,
+      defaultTtl: this.defaultTtl
+    }
+  }
+  if(process.env.APIGEE_ACCESS_KEY && process.env.APIGEE_ACCESS_SECRET) {
+    options.auth = {
+      user: process.env.APIGEE_ACCESS_KEY,
+      pass: process.env.APIGEE_ACCESS_SECRET
+    }
   }
   request(options, function (error, response, body) {
     if (cb) {

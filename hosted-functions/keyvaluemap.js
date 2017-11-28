@@ -24,11 +24,23 @@
 
 var request = require('request')
 var util = require('util')
-var baseUri = "http://54.237.164.240:9001/apigee-access-service"
+var baseUri = process.env.APIGEE_ACCESS_KVM_SERVICE
 
 var getKeys = function (id, name, scope, api, revision, cb) {
-    var uri = util.format("%s/kvms/%s/keys\?scope\=%s", baseUri, name, scope)
-    request(uri, function (error, response, body) {
+    var options = {
+        uri: util.format("%s/kvms/%s/keys", baseUri, name),
+        method: "GET",
+        qs: {
+            scope: scope
+        }
+    }
+    if (process.env.APIGEE_ACCESS_KEY && process.env.APIGEE_ACCESS_SECRET) {
+        options.auth = {
+            user: process.env.APIGEE_ACCESS_KEY,
+            pass: process.env.APIGEE_ACCESS_SECRET
+        }
+    }
+    request(options, function (error, response, body) {
         if (error) {
             cb(error, null)
         }
@@ -49,8 +61,20 @@ var getKeys = function (id, name, scope, api, revision, cb) {
 }
 
 var getKey = function (id, key, name, scope, api, revision, cb) {
-    var uri = util.format("%s/kvms/%s/values/%s\?scope\=%s", baseUri, name, key, scope)
-    request(uri, function (error, response, body) {
+    var options = {
+        uri: util.format("%s/kvms/%s/values/%s", baseUri, name, key),
+        method: "GET",
+        qs: {
+            scope: scope
+        }
+    }
+    if (process.env.APIGEE_ACCESS_KEY && process.env.APIGEE_ACCESS_SECRET) {
+        options.auth = {
+            user: process.env.APIGEE_ACCESS_KEY,
+            pass: process.env.APIGEE_ACCESS_SECRET
+        }
+    }
+    request(options, function (error, response, body) {
         if (error) {
             cb(error, null)
         }
